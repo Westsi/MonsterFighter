@@ -3,8 +3,8 @@ package main
 import "fmt"
 
 func initVars() {
-	initOriginalMonsters()
 	initMonsterTypes()
+	initOriginalMonsters()
 }
 
 var WormType MonsterType
@@ -19,8 +19,8 @@ var AlienMonster OriginalMonster
 func createMonster(parents []Monster) BredMonster {
 	return BredMonster{
 		Name:       nameMonster(parents),
-		Health:     0,      // PLACEHOLDER
-		Rarity:     Common, //PLACEHOLDER
+		Health:     determineHealth(parents),
+		Rarity:     determineRarity(parents),
 		Generation: getGeneration(parents),
 		Parents:    parents,
 		Types:      getTypes(parents),
@@ -31,6 +31,7 @@ type Monster interface {
 	getName() string
 	getGeneration() int64
 	getTypes() []MonsterType
+	getHealth() int64
 }
 
 type Rarity string
@@ -61,6 +62,10 @@ func (o OriginalMonster) getGeneration() int64 {
 
 func (o OriginalMonster) getTypes() []MonsterType {
 	return []MonsterType{o.Type}
+}
+
+func (o OriginalMonster) getHealth() int64 {
+	return o.Health
 }
 
 func initOriginalMonsters() {
@@ -103,6 +108,10 @@ func (b BredMonster) getGeneration() int64 {
 	return b.Generation
 }
 
+func (b BredMonster) getHealth() int64 {
+	return b.Health
+}
+
 func (b BredMonster) getTypes() []MonsterType {
 	var types []MonsterType
 	for _, p := range b.Parents {
@@ -111,7 +120,7 @@ func (b BredMonster) getTypes() []MonsterType {
 	return types
 }
 
-func (b BredMonster) determineRarity() Rarity {
+func determineRarity(parents []Monster) Rarity {
 	// something to do with generation, rarities of parents, and damage
 
 	return Rare
@@ -119,11 +128,8 @@ func (b BredMonster) determineRarity() Rarity {
 
 func nameMonster(parents []Monster) string {
 	name := ""
-	fmt.Println(parents[0].getName())
-	fmt.Println(parents)
 	name = name + parents[0].getName()[0:int(len(parents[0].getName())/2)]
 	name = name + parents[1].getName()[int(len(parents[1].getName())/2):len(parents[1].getName())]
-
 	return name
 }
 
@@ -140,5 +146,39 @@ func getTypes(parents []Monster) []MonsterType {
 	for _, p := range parents {
 		types = append(types, p.getTypes()...)
 	}
-	return types
+	return workOutTypesPercentages(types)
+}
+
+func workOutTypesPercentages(types []MonsterType) []MonsterType {
+	typecounts := make(map[MonsterType]int)
+	for _, t := range types {
+		typecounts[t] += 1
+	}
+	var ttr []MonsterType
+	sum := 0
+
+	for _, val := range typecounts {
+		// sum vals
+		sum += val
+	}
+
+	for t, val := range typecounts {
+		// work out percentages
+		tt := MonsterType{
+			Name:       t.Name,
+			Percentage: int8((float64(val) / float64(sum)) * 100),
+		}
+		ttr = append(ttr, tt)
+	}
+
+	return ttr
+}
+
+func determineHealth(parents []Monster) int64 {
+	sum := 0
+	for _, p := range parents {
+		sum += int(p.getHealth())
+	}
+
+	return int64(sum / len(parents))
 }
