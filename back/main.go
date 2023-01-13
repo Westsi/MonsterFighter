@@ -7,8 +7,7 @@ import (
 )
 
 func main() {
-	m := MonsterType{"test", 1}
-	m.printPercentage()
+	
 	// http.HandleFunc("/", hello)
 	// http.ListenAndServe("8000", nil)
 }

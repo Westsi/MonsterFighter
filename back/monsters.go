@@ -20,11 +20,16 @@ var AlienMonster OriginalMonster
 func createMonster(parents []Monster) BredMonster {
 	return BredMonster{
 		Name: nameMonster(parents),
+		Health: 0, // PLACEHOLDER
+		Rarity: Common, //PLACEHOLDER
+		Generation: getGeneration(parents),
+
 	}
 }
 
 type Monster interface {
 	getName() string
+	getGeneration() int64
 }
 
 type Rarity string
@@ -46,6 +51,10 @@ type OriginalMonster struct {
 
 func (o OriginalMonster) getName() string {
 	return o.Name
+}
+
+func (o OriginalMonster) getGeneration() int64 {
+	return o.Generation
 }
 
 func initOriginalMonsters() {
@@ -85,6 +94,9 @@ type BredMonster struct {
 func (b BredMonster) getName() string {
 	return b.Name
 }
+func (b BredMonster) getGeneration() int64 {
+	return b.Generation
+}
 
 func (b BredMonster) determineRarity() Rarity {
 	// something to do with generation, rarities of parents, and damage
@@ -98,4 +110,12 @@ func nameMonster(parents []Monster) string {
 	name = name + parents[1].getName()[int(len(parents[1].getName())/2):len(parents[1].getName())]
 
 	return name
+}
+
+func getGeneration(parents []Monster) int64 {
+	if parents[0].getGeneration() > parents[1].getGeneration() {
+		return parents[0].getGeneration()
+	} else {
+		return parents[1].getGeneration()
+	}
 }
