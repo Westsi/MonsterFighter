@@ -14,7 +14,7 @@ func initDB() {
 	}
 	db = _db
 
-	if err := db.AutoMigrate(&DBBredMonster{}, &DBOriginalMonster{}); err != nil {
+	if err := db.AutoMigrate(); err != nil {
 		panic(err)
 	}
 }

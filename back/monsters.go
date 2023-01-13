@@ -35,6 +35,7 @@ type Monster interface {
 	getGeneration() int64
 	getTypes() []MonsterType
 	getHealth() int64
+	// ADD OWNERS
 }
 
 type Rarity string
