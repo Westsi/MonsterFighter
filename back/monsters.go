@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func initVars() {
 	initMonsterTypes()
@@ -85,7 +88,7 @@ func initMonsterTypes() {
 
 type MonsterType struct {
 	Name       string
-	Percentage int8
+	Percentage float64
 }
 
 func (m MonsterType) printPercentage() {
@@ -135,9 +138,9 @@ func nameMonster(parents []Monster) string {
 
 func getGeneration(parents []Monster) int64 {
 	if parents[0].getGeneration() > parents[1].getGeneration() {
-		return parents[0].getGeneration()
+		return parents[0].getGeneration() + 1
 	} else {
-		return parents[1].getGeneration()
+		return parents[1].getGeneration() + 1
 	}
 }
 
@@ -166,7 +169,7 @@ func workOutTypesPercentages(types []MonsterType) []MonsterType {
 		// work out percentages
 		tt := MonsterType{
 			Name:       t.Name,
-			Percentage: int8((float64(val) / float64(sum)) * 100),
+			Percentage: math.Round((float64(val)/float64(sum))*10000) / 100,
 		}
 		ttr = append(ttr, tt)
 	}
