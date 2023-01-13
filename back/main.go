@@ -7,7 +7,13 @@ import (
 )
 
 func main() {
-	
+	initVars()
+	bm := createMonster([]Monster{WormMonster, TrollMonster})
+	fmt.Println(bm.Name)
+	fmt.Println(bm.Rarity)
+	fmt.Println(bm.Health)
+	fmt.Println(bm.Generation)
+
 	// http.HandleFunc("/", hello)
 	// http.ListenAndServe("8000", nil)
 }
