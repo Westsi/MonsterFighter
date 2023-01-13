@@ -47,6 +47,12 @@ const (
 	Common    Rarity = "Common"
 )
 
+// func (r Rarity)toString() string {
+// 	select {
+// 		case r == "Legendary"
+// 	}
+// }
+
 type OriginalMonster struct {
 	Name       string
 	Health     int64
