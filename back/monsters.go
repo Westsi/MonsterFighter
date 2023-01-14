@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"math"
+	"time"
 )
 
 func initVars() {
@@ -25,7 +27,7 @@ func createMonster(parents []Monster) BredMonster {
 		Health:     determineHealth(parents),
 		Rarity:     determineRarity(parents),
 		Generation: getGeneration(parents),
-		Parents:    parents,
+		Parents:    getParentsAsIDs(parents),
 		Types:      getTypes(parents),
 	}
 }
@@ -35,7 +37,9 @@ type Monster interface {
 	getGeneration() int64
 	getTypes() []MonsterType
 	getHealth() int64
+	getID() string
 	// ADD OWNERS
+	// PARENTS SHOULD BE STORED AS IDS NOT OBJECTS
 }
 
 type Rarity string
@@ -60,6 +64,7 @@ type OriginalMonster struct {
 	Rarity     Rarity
 	Generation int64
 	Type       MonsterType
+	ID         string
 }
 
 func (o OriginalMonster) getName() string {
@@ -78,11 +83,15 @@ func (o OriginalMonster) getHealth() int64 {
 	return o.Health
 }
 
+func (o OriginalMonster) getID() string {
+	return o.ID
+}
+
 func initOriginalMonsters() {
-	WormMonster = OriginalMonster{"Worm", 20, Common, 0, WormType}
-	DragonMonster = OriginalMonster{"Dragon", 100, Rare, 0, DragonType}
-	TrollMonster = OriginalMonster{"Troll", 30, Uncommon, 0, TrollType}
-	AlienMonster = OriginalMonster{"Alien", 40, Uncommon, 0, AlienType}
+	WormMonster = OriginalMonster{"Worm", 20, Common, 0, WormType, genNewID(true, "Worm", "")}
+	DragonMonster = OriginalMonster{"Dragon", 100, Rare, 0, DragonType, genNewID(true, "Dragon", "")}
+	TrollMonster = OriginalMonster{"Troll", 30, Uncommon, 0, TrollType, genNewID(true, "Troll", "")}
+	AlienMonster = OriginalMonster{"Alien", 40, Uncommon, 0, AlienType, genNewID(true, "Alien", "")}
 
 }
 
@@ -91,6 +100,17 @@ func initMonsterTypes() {
 	DragonType = MonsterType{"Dragon", 100}
 	TrollType = MonsterType{"Troll", 100}
 	AlienType = MonsterType{"Alien", 100}
+}
+
+func genNewID(isOriginalMonster bool, name string, parentOneID string) string {
+	if isOriginalMonster {
+		sum := sha256.Sum256([]byte(name + fmt.Sprint(time.Now().UnixMicro())))
+		return fmt.Sprintf("%x", sum)
+	} else {
+		sum := sha256.Sum256([]byte(name + parentOneID + fmt.Sprint(time.Now().UnixMicro())))
+		return fmt.Sprintf("%x", sum)
+	}
+
 }
 
 type MonsterType struct {
@@ -107,8 +127,9 @@ type BredMonster struct {
 	Health     int64
 	Types      []MonsterType
 	Rarity     Rarity
-	Parents    []Monster
+	Parents    []string
 	Generation int64
+	ID         string
 }
 
 func (b BredMonster) getName() string {
@@ -121,6 +142,12 @@ func (b BredMonster) getGeneration() int64 {
 func (b BredMonster) getHealth() int64 {
 	return b.Health
 }
+
+func (b BredMonster) getID() string {
+	return b.ID
+}
+
+// ALL FUNCTIONS FROM HERE ASSUME PARENTS ARE OBJECTS - FIX THESE!
 
 func (b BredMonster) getTypes() []MonsterType {
 	var types []MonsterType
@@ -191,4 +218,12 @@ func determineHealth(parents []Monster) int64 {
 	}
 
 	return int64(sum / len(parents))
+}
+
+func getParentsAsIDs(parents []Monster) []string {
+	var r []string
+	for _, p := range parents {
+		r = append(r, p.getID())
+	}
+	return r
 }
