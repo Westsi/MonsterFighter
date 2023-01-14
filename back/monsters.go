@@ -46,8 +46,6 @@ type Monster interface {
 	getTypes() []MonsterType
 	getHealth() int64
 	getID() string
-	// ADD OWNERS
-	// PARENTS SHOULD BE STORED AS IDS NOT OBJECTS
 }
 
 type Rarity string
@@ -59,12 +57,6 @@ const (
 	Uncommon  Rarity = "Uncommon"
 	Common    Rarity = "Common"
 )
-
-// func (r Rarity)toString() string {
-// 	select {
-// 		case r == "Legendary"
-// 	}
-// }
 
 type OriginalMonster struct {
 	Name       string
@@ -118,10 +110,10 @@ func initMonsterTypes() {
 func genNewID(isOriginalMonster bool, name string, parentOneID string) string {
 	if isOriginalMonster {
 		sum := sha256.Sum256([]byte(name + fmt.Sprint(time.Now().UnixMicro())))
-		return fmt.Sprintf("%x", sum)
+		return fmt.Sprintf("o%x", sum)
 	} else {
 		sum := sha256.Sum256([]byte(name + parentOneID + fmt.Sprint(time.Now().UnixMicro())))
-		return fmt.Sprintf("%x", sum)
+		return fmt.Sprintf("b%x", sum)
 	}
 
 }
@@ -161,13 +153,10 @@ func (b BredMonster) getID() string {
 }
 
 func getParentObjectFromID(id string) Monster {
-	o := readOriginalMonsterFromFile(id)
-	b := readBredMonsterFromFile(id)
-	// HOW TO CHECK WHICH ONE TO USE?!
-	fmt.Println(o)
-	fmt.Println(b)
-
-	return BredMonster{}
+	if string(id[0]) == "o" {
+		return readOriginalMonsterFromFile(id)
+	}
+	return readBredMonsterFromFile(id)
 }
 
 func (b BredMonster) getTypes() []MonsterType {
@@ -181,6 +170,7 @@ func (b BredMonster) getTypes() []MonsterType {
 func determineRarity(parents []Monster) Rarity {
 	// something to do with generation, rarities of parents, and damage
 
+	// later generation - more powerful. should not directly affect, but will affect damage and health
 	return Rare
 }
 
