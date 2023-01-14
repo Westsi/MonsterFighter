@@ -5,49 +5,160 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
+	"strings"
 )
 
 // path format
 // monsters/_id_.json
 
+type FileOriginalMonster struct {
+	Name       string
+	Health     int64
+	Rarity     string
+	Generation int64
+	Type       string
+	ID         string
+}
+
+type FileBredMonster struct {
+	Name       string
+	Health     int64
+	Types      []string
+	Rarity     string
+	Parents    []string
+	Generation int64
+	ID         string
+}
+
 const BASEPATH string = "monsters/"
 
 func (b BredMonster) writeToFile(path string) {
+	p := path
 
-	monster, _ := json.Marshal(b)
-	fmt.Println(string(monster))
+	if path[len(path)-5:len(path)-1] != ".json" {
+		p = p + ".json"
+	}
 
-	ioutil.WriteFile(BASEPATH+path, monster, 0666)
+	var types []string
+	for _, ty := range b.Types {
+		types = append(types, ty.getString())
+	}
+	t := FileBredMonster{
+		Name:       b.Name,
+		Health:     b.Health,
+		Types:      types,
+		Rarity:     string(b.Rarity),
+		Parents:    b.Parents,
+		Generation: b.Generation,
+		ID:         b.ID,
+	}
+	monster, _ := json.Marshal(t)
+	// fmt.Println(string(monster))
+
+	ioutil.WriteFile(BASEPATH+p, monster, 0666)
 
 }
 
 func (o OriginalMonster) writeToFile(path string) {
 
-	monster, _ := json.Marshal(o)
-	fmt.Println(string(monster))
+	p := path
 
-	ioutil.WriteFile(BASEPATH+path, monster, 0666)
+	if path[len(path)-5:len(path)-1] != ".json" {
+		p = p + ".json"
+	}
+
+	t := FileOriginalMonster{
+		Name:       o.Name,
+		Health:     o.Health,
+		Rarity:     string(o.Rarity),
+		Generation: o.Generation,
+		Type:       o.Type.getString(),
+		ID:         o.ID,
+	}
+
+	monster, _ := json.Marshal(t)
+	// fmt.Println(string(monster))
+
+	ioutil.WriteFile(BASEPATH+p, monster, 0666)
 
 }
 
 func readBredMonsterFromFile(path string) BredMonster {
-	dat, err := os.ReadFile(BASEPATH + path)
+
+	p := path
+
+	fmt.Println(path[len(path)-5:])
+
+	if path[len(path)-5:] != ".json" {
+		p = p + ".json"
+	}
+	dat, err := os.ReadFile(BASEPATH + p)
 	if err != nil {
 		fmt.Println(err)
 	}
-	var b BredMonster
-	json.Unmarshal(dat, &b)
+	var f FileBredMonster
+	json.Unmarshal(dat, &f)
+
+	var types []MonsterType
+
+	for _, st := range f.Types {
+		types = append(types, deserializeMonsterType(st))
+	}
+
+	b := BredMonster{
+		Name:       f.Name,
+		Health:     f.Health,
+		Types:      types,
+		Rarity:     Rarity(f.Rarity),
+		Parents:    f.Parents,
+		Generation: f.Generation,
+		ID:         f.ID,
+	}
 
 	return b
 }
 
 func readOriginalMonsterFromFile(path string) OriginalMonster {
-	dat, err := os.ReadFile(BASEPATH + path)
+
+	p := path
+
+	if path[len(path)-5:len(path)-1] != ".json" {
+		p = p + ".json"
+	}
+	dat, err := os.ReadFile(BASEPATH + p)
 	if err != nil {
 		fmt.Println(err)
 	}
-	var o OriginalMonster
-	json.Unmarshal(dat, &o)
+	var f FileOriginalMonster
+	json.Unmarshal(dat, &f)
+
+	o := OriginalMonster{
+		Name:       f.Name,
+		Health:     f.Health,
+		Type:       deserializeMonsterType(f.Type),
+		Rarity:     Rarity(f.Rarity),
+		Generation: f.Generation,
+		ID:         f.ID,
+	}
 
 	return o
+}
+
+func (mt MonsterType) getString() string {
+	//name percentage
+	s := ""
+	s = s + mt.Name + "~" + fmt.Sprintf("%f", mt.Percentage)
+	return s
+}
+
+func deserializeMonsterType(s string) MonsterType {
+	tempstrings := strings.Split(s, "~")
+	name := tempstrings[0]
+	percentage, err := strconv.ParseFloat(tempstrings[1], 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return MonsterType{Name: name, Percentage: percentage}
 }
