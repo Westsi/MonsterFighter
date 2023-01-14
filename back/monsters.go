@@ -21,15 +21,23 @@ var TrollMonster OriginalMonster
 var AlienType MonsterType
 var AlienMonster OriginalMonster
 
-func createMonster(parents []Monster) BredMonster {
-	return BredMonster{
+func createMonster(parentss []string) BredMonster {
+	var parents []Monster
+	for _, id := range parentss {
+		parents = append(parents, getParentObjectFromID(id))
+	}
+	b := BredMonster{
 		Name:       nameMonster(parents),
 		Health:     determineHealth(parents),
 		Rarity:     determineRarity(parents),
 		Generation: getGeneration(parents),
-		Parents:    getParentsAsIDs(parents),
+		Parents:    parentss,
 		Types:      getTypes(parents),
+		ID:         genNewID(false, nameMonster(parents), parentss[0]),
 	}
+	b.writeToFile(b.ID)
+
+	return b
 }
 
 type Monster interface {
@@ -93,6 +101,11 @@ func initOriginalMonsters() {
 	TrollMonster = OriginalMonster{"Troll", 30, Uncommon, 0, TrollType, genNewID(true, "Troll", "")}
 	AlienMonster = OriginalMonster{"Alien", 40, Uncommon, 0, AlienType, genNewID(true, "Alien", "")}
 
+	WormMonster.writeToFile(WormMonster.getID())
+	DragonMonster.writeToFile(DragonMonster.getID())
+	TrollMonster.writeToFile(TrollMonster.getID())
+	AlienMonster.writeToFile(AlienMonster.getID())
+
 }
 
 func initMonsterTypes() {
@@ -147,12 +160,20 @@ func (b BredMonster) getID() string {
 	return b.ID
 }
 
-// ALL FUNCTIONS FROM HERE ASSUME PARENTS ARE OBJECTS - FIX THESE!
+func getParentObjectFromID(id string) Monster {
+	o := readOriginalMonsterFromFile(id)
+	b := readBredMonsterFromFile(id)
+	// HOW TO CHECK WHICH ONE TO USE?!
+	fmt.Println(o)
+	fmt.Println(b)
+
+	return BredMonster{}
+}
 
 func (b BredMonster) getTypes() []MonsterType {
 	var types []MonsterType
 	for _, p := range b.Parents {
-		types = append(types, p.getTypes()...)
+		types = append(types, getParentObjectFromID(p).getTypes()...)
 	}
 	return types
 }
@@ -218,12 +239,4 @@ func determineHealth(parents []Monster) int64 {
 	}
 
 	return int64(sum / len(parents))
-}
-
-func getParentsAsIDs(parents []Monster) []string {
-	var r []string
-	for _, p := range parents {
-		r = append(r, p.getID())
-	}
-	return r
 }

@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func monsterTester() {
-	bmo := createMonster([]Monster{WormMonster, TrollMonster})
+	bmo := createMonster([]string{WormMonster.getID(), TrollMonster.getID()})
 	// fmt.Println(bmo.Name)
 	// fmt.Println(bmo.Rarity)
 	// fmt.Println(bmo.Health)
@@ -11,7 +11,7 @@ func monsterTester() {
 	// fmt.Println(bmo.Types)
 	// fmt.Println(bmo.Parents)
 
-	bmt := createMonster([]Monster{DragonMonster, TrollMonster})
+	bmt := createMonster([]string{DragonMonster.getID(), TrollMonster.getID()})
 	// fmt.Println(bmt.Name)
 	// fmt.Println(bmt.Rarity)
 	// fmt.Println(bmt.Health)
@@ -19,7 +19,7 @@ func monsterTester() {
 	// fmt.Println(bmt.Types)
 	// fmt.Println(bmt.Parents)
 
-	bm := createMonster([]Monster{bmo, bmt})
+	bm := createMonster([]string{bmo.getID(), bmt.getID()})
 	// fmt.Println(bm.Name)
 	// fmt.Println(bm.Rarity)
 	// fmt.Println(bm.Health)
@@ -27,7 +27,7 @@ func monsterTester() {
 	// fmt.Print("Types of final monster:")
 	// fmt.Println(bm.Types)
 
-	bmtt := createMonster([]Monster{bm, bmt})
+	bmtt := createMonster([]string{bm.getID(), bmt.getID()})
 	// fmt.Println(bm.Name)
 	// fmt.Println(bm.Rarity)
 	// fmt.Println(bm.Health)
