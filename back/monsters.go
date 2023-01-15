@@ -20,6 +20,18 @@ var TrollType MonsterType
 var TrollMonster OriginalMonster
 var AlienType MonsterType
 var AlienMonster OriginalMonster
+var UnicornType MonsterType
+var UnicornMonster OriginalMonster
+var PhoenixType MonsterType
+var PhoenixMonster OriginalMonster
+var WolfType MonsterType
+var WolfMonster OriginalMonster
+var BearType MonsterType
+var BearMonster OriginalMonster
+var GorgonType MonsterType
+var GorgonMonster OriginalMonster
+var RabbitType MonsterType
+var RabbitMonster OriginalMonster
 
 func createMonster(parentss []string) BredMonster {
 	var parents []Monster
@@ -89,14 +101,26 @@ func (o OriginalMonster) getID() string {
 
 func initOriginalMonsters() {
 	WormMonster = OriginalMonster{"Worm", 20, Common, 0, WormType, genNewID(true, "Worm", "")}
-	DragonMonster = OriginalMonster{"Dragon", 100, Rare, 0, DragonType, genNewID(true, "Dragon", "")}
+	DragonMonster = OriginalMonster{"Dragon", 100, Epic, 0, DragonType, genNewID(true, "Dragon", "")}
 	TrollMonster = OriginalMonster{"Troll", 30, Uncommon, 0, TrollType, genNewID(true, "Troll", "")}
 	AlienMonster = OriginalMonster{"Alien", 40, Uncommon, 0, AlienType, genNewID(true, "Alien", "")}
+	UnicornMonster = OriginalMonster{"Unicorn", 60, Rare, 0, UnicornType, genNewID(true, "Unicorn", "")}
+	PhoenixMonster = OriginalMonster{"Phoenix", 70, Epic, 0, PhoenixType, genNewID(true, "Phoenix", "")}
+	WolfMonster = OriginalMonster{"Wolf", 50, Rare, 0, WolfType, genNewID(true, "Wolf", "")}
+	BearMonster = OriginalMonster{"Bear", 40, Uncommon, 0, BearType, genNewID(true, "Bear", "")}
+	GorgonMonster = OriginalMonster{"Gorgon", 90, Epic, 0, GorgonType, genNewID(true, "Gorgon", "")}
+	RabbitMonster = OriginalMonster{"Rabbit", 150, Legendary, 0, RabbitType, genNewID(true, "Rabbit", "")}
 
 	WormMonster.writeToFile(WormMonster.getID())
 	DragonMonster.writeToFile(DragonMonster.getID())
 	TrollMonster.writeToFile(TrollMonster.getID())
 	AlienMonster.writeToFile(AlienMonster.getID())
+	UnicornMonster.writeToFile(UnicornMonster.getID())
+	PhoenixMonster.writeToFile(PhoenixMonster.getID())
+	WolfMonster.writeToFile(WolfMonster.getID())
+	BearMonster.writeToFile(BearMonster.getID())
+	GorgonMonster.writeToFile(GorgonMonster.getID())
+	RabbitMonster.writeToFile(RabbitMonster.getID())
 
 }
 
@@ -105,6 +129,12 @@ func initMonsterTypes() {
 	DragonType = MonsterType{"Dragon", 100}
 	TrollType = MonsterType{"Troll", 100}
 	AlienType = MonsterType{"Alien", 100}
+	UnicornType = MonsterType{"Unicorn", 100}
+	PhoenixType = MonsterType{"Phoenix", 100}
+	WolfType = MonsterType{"Wolf", 100}
+	BearType = MonsterType{"Bear", 100}
+	GorgonType = MonsterType{"Gorgon", 100}
+	RabbitType = MonsterType{"Rabbit", 100}
 }
 
 func genNewID(isOriginalMonster bool, name string, parentOneID string) string {
