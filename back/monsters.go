@@ -227,7 +227,7 @@ func (b BredMonster) getStrength() int64 {
 
 func (b BredMonster) geneticallyRandomize() BredMonster {
 
-	// 10% chance for one of the stats to be boosted by 1-50 points, 7.5% chance for random type to be added
+	// 10% chance for one of the stats to be boosted by 1-50 points, 7.5% chance for random base type to be added
 
 	n := rng.Intn(100)
 
@@ -242,6 +242,32 @@ func (b BredMonster) geneticallyRandomize() BredMonster {
 			b.Speed += int64(increase)
 		} else if statChoice == 3 {
 			b.Stamina += int64(increase)
+		}
+	}
+
+	n = rng.Intn(1000)
+
+	if n <= 75 {
+		if n <= 23 {
+			b.Types = workOutTypesPercentages(append(b.Types, WormType))
+		} else if n <= 31 {
+			b.Types = workOutTypesPercentages(append(b.Types, TrollType))
+		} else if n <= 39 {
+			b.Types = workOutTypesPercentages(append(b.Types, AlienType))
+		} else if n <= 47 {
+			b.Types = workOutTypesPercentages(append(b.Types, BearType))
+		} else if n <= 52 {
+			b.Types = workOutTypesPercentages(append(b.Types, UnicornType))
+		} else if n <= 58 {
+			b.Types = workOutTypesPercentages(append(b.Types, WolfType))
+		} else if n <= 62 {
+			b.Types = workOutTypesPercentages(append(b.Types, GorgonType))
+		} else if n <= 66 {
+			b.Types = workOutTypesPercentages(append(b.Types, PhoenixType))
+		} else if n <= 70 {
+			b.Types = workOutTypesPercentages(append(b.Types, DragonType))
+		} else if n <= 74 {
+			b.Types = workOutTypesPercentages(append(b.Types, RabbitType))
 		}
 	}
 	return b
