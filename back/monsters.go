@@ -130,15 +130,15 @@ func initOriginalMonsters() {
 	// need to update strength, speed, stamina for these (last 3 vals)
 	WormMonster = OriginalMonster{"Worm", 20, Common, 0, WormType, genNewID(true, "Worm", ""), 100, 100, 100}
 	DragonMonster = OriginalMonster{"Dragon", 100, Epic, 0, DragonType, genNewID(true, "Dragon", ""), 100, 100, 100}
-	TrollMonster = OriginalMonster{"Troll", 30, Uncommon, 0, TrollType, genNewID(true, "Troll", ""), 100, 100, 100}
+	TrollMonster = OriginalMonster{"Troll", 30, Common, 0, TrollType, genNewID(true, "Troll", ""), 100, 100, 100}
 	AlienMonster = OriginalMonster{"Alien", 40, Uncommon, 0, AlienType, genNewID(true, "Alien", ""), 100, 100, 100}
 	UnicornMonster = OriginalMonster{"Unicorn", 60, Rare, 0, UnicornType, genNewID(true, "Unicorn", ""), 100, 100, 100}
-	PhoenixMonster = OriginalMonster{"Phoenix", 70, Epic, 0, PhoenixType, genNewID(true, "Phoenix", ""), 100, 100, 100}
-	WolfMonster = OriginalMonster{"Wolf", 50, Rare, 0, WolfType, genNewID(true, "Wolf", ""), 100, 100, 100}
+	PhoenixMonster = OriginalMonster{"Phoenix", 70, Rare, 0, PhoenixType, genNewID(true, "Phoenix", ""), 100, 100, 100}
+	WolfMonster = OriginalMonster{"Wolf", 50, Uncommon, 0, WolfType, genNewID(true, "Wolf", ""), 100, 100, 100}
 	BearMonster = OriginalMonster{"Bear", 40, Uncommon, 0, BearType, genNewID(true, "Bear", ""), 100, 100, 100}
 	GorgonMonster = OriginalMonster{"Gorgon", 90, Epic, 0, GorgonType, genNewID(true, "Gorgon", ""), 100, 100, 100}
 	RabbitMonster = OriginalMonster{"Rabbit", 150, Legendary, 0, RabbitType, genNewID(true, "Rabbit", ""), 100, 100, 100}
-
+	//
 	WormMonster.writeToFile(WormMonster.getID())
 	DragonMonster.writeToFile(DragonMonster.getID())
 	TrollMonster.writeToFile(TrollMonster.getID())
@@ -246,27 +246,39 @@ func (b BredMonster) geneticallyRandomize() BredMonster {
 	}
 
 	n = rng.Intn(1000)
-
-	if n <= 75 {
-		if n <= 23 {
-			b.Types = workOutTypesPercentages(append(b.Types, WormType))
-		} else if n <= 31 {
-			b.Types = workOutTypesPercentages(append(b.Types, TrollType))
-		} else if n <= 39 {
-			b.Types = workOutTypesPercentages(append(b.Types, AlienType))
-		} else if n <= 47 {
-			b.Types = workOutTypesPercentages(append(b.Types, BearType))
-		} else if n <= 52 {
-			b.Types = workOutTypesPercentages(append(b.Types, UnicornType))
-		} else if n <= 58 {
-			b.Types = workOutTypesPercentages(append(b.Types, WolfType))
-		} else if n <= 62 {
-			b.Types = workOutTypesPercentages(append(b.Types, GorgonType))
-		} else if n <= 66 {
-			b.Types = workOutTypesPercentages(append(b.Types, PhoenixType))
-		} else if n <= 70 {
-			b.Types = workOutTypesPercentages(append(b.Types, DragonType))
-		} else if n <= 74 {
+	if n <= 80 {
+		if n <= 40 {
+			// COMMON
+			if n <= 20 {
+				b.Types = workOutTypesPercentages(append(b.Types, WormType))
+			} else {
+				b.Types = workOutTypesPercentages(append(b.Types, TrollType))
+			}
+		} else if n <= 64 {
+			// UNCOMMON
+			if n <= 48 {
+				b.Types = workOutTypesPercentages(append(b.Types, AlienType))
+			} else if n <= 56 {
+				b.Types = workOutTypesPercentages(append(b.Types, WolfType))
+			} else {
+				b.Types = workOutTypesPercentages(append(b.Types, BearType))
+			}
+		} else if n <= 72 {
+			// RARE
+			if n <= 68 {
+				b.Types = workOutTypesPercentages(append(b.Types, UnicornType))
+			} else {
+				b.Types = workOutTypesPercentages(append(b.Types, PhoenixType))
+			}
+		} else if n <= 78 {
+			// EPIC
+			if n <= 75 {
+				b.Types = workOutTypesPercentages(append(b.Types, DragonType))
+			} else {
+				b.Types = workOutTypesPercentages(append(b.Types, GorgonType))
+			}
+		} else {
+			// LEGENDARY
 			b.Types = workOutTypesPercentages(append(b.Types, RabbitType))
 		}
 	}
