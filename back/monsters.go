@@ -149,7 +149,7 @@ func initOriginalMonsters() {
 	BearMonster.writeToFile(BearMonster.getID())
 	GorgonMonster.writeToFile(GorgonMonster.getID())
 	RabbitMonster.writeToFile(RabbitMonster.getID())
-
+	fmt.Println("initialized monsters")
 }
 
 func initMonsterTypes() {
@@ -163,6 +163,8 @@ func initMonsterTypes() {
 	BearType = MonsterType{"Bear", 100}
 	GorgonType = MonsterType{"Gorgon", 100}
 	RabbitType = MonsterType{"Rabbit", 100}
+
+	fmt.Println("initialized monster types")
 }
 
 func genNewID(isOriginalMonster bool, name string, parentOneID string) string {
@@ -299,6 +301,8 @@ func (b BredMonster) getTypes() []MonsterType {
 	}
 	return types
 }
+
+// NEED TO REWRITE determineX functions and nameMonster
 
 func determineRarity(parents []Monster) Rarity {
 	// something to do with generation, rarities of parents, and damage
