@@ -8,7 +8,7 @@ import (
 
 func main() {
 	initVars()
-	// monsterTester()
+	monsterTester()
 	initDB()
 
 	// http.HandleFunc("/", hello)

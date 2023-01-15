@@ -4,12 +4,17 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"math"
+	"math/rand"
 	"time"
 )
+
+var rng *rand.Rand
 
 func initVars() {
 	initMonsterTypes()
 	initOriginalMonsters()
+	rng = rand.New(rand.NewSource(time.Now().UnixMilli()))
+
 }
 
 var WormType MonsterType
@@ -46,7 +51,11 @@ func createMonster(parentss []string) BredMonster {
 		Parents:    parentss,
 		Types:      getTypes(parents),
 		ID:         genNewID(false, nameMonster(parents), parentss[0]),
+		Strength:   determineStrength(parents),
+		Speed:      determineSpeed(parents),
+		Stamina:    determineStamina(parents),
 	}
+	b = b.geneticallyRandomize()
 	b.writeToFile(b.ID)
 
 	return b
@@ -57,6 +66,9 @@ type Monster interface {
 	getGeneration() int64
 	getTypes() []MonsterType
 	getHealth() int64
+	getSpeed() int64
+	getStrength() int64
+	getStamina() int64
 	getID() string
 }
 
@@ -77,6 +89,9 @@ type OriginalMonster struct {
 	Generation int64
 	Type       MonsterType
 	ID         string
+	Strength   int64
+	Speed      int64
+	Stamina    int64
 }
 
 func (o OriginalMonster) getName() string {
@@ -95,21 +110,34 @@ func (o OriginalMonster) getHealth() int64 {
 	return o.Health
 }
 
+func (o OriginalMonster) getSpeed() int64 {
+	return o.Health
+}
+
+func (o OriginalMonster) getStamina() int64 {
+	return o.Health
+}
+
+func (o OriginalMonster) getStrength() int64 {
+	return o.Health
+}
+
 func (o OriginalMonster) getID() string {
 	return o.ID
 }
 
 func initOriginalMonsters() {
-	WormMonster = OriginalMonster{"Worm", 20, Common, 0, WormType, genNewID(true, "Worm", "")}
-	DragonMonster = OriginalMonster{"Dragon", 100, Epic, 0, DragonType, genNewID(true, "Dragon", "")}
-	TrollMonster = OriginalMonster{"Troll", 30, Uncommon, 0, TrollType, genNewID(true, "Troll", "")}
-	AlienMonster = OriginalMonster{"Alien", 40, Uncommon, 0, AlienType, genNewID(true, "Alien", "")}
-	UnicornMonster = OriginalMonster{"Unicorn", 60, Rare, 0, UnicornType, genNewID(true, "Unicorn", "")}
-	PhoenixMonster = OriginalMonster{"Phoenix", 70, Epic, 0, PhoenixType, genNewID(true, "Phoenix", "")}
-	WolfMonster = OriginalMonster{"Wolf", 50, Rare, 0, WolfType, genNewID(true, "Wolf", "")}
-	BearMonster = OriginalMonster{"Bear", 40, Uncommon, 0, BearType, genNewID(true, "Bear", "")}
-	GorgonMonster = OriginalMonster{"Gorgon", 90, Epic, 0, GorgonType, genNewID(true, "Gorgon", "")}
-	RabbitMonster = OriginalMonster{"Rabbit", 150, Legendary, 0, RabbitType, genNewID(true, "Rabbit", "")}
+	// need to update strength, speed, stamina for these (last 3 vals)
+	WormMonster = OriginalMonster{"Worm", 20, Common, 0, WormType, genNewID(true, "Worm", ""), 100, 100, 100}
+	DragonMonster = OriginalMonster{"Dragon", 100, Epic, 0, DragonType, genNewID(true, "Dragon", ""), 100, 100, 100}
+	TrollMonster = OriginalMonster{"Troll", 30, Uncommon, 0, TrollType, genNewID(true, "Troll", ""), 100, 100, 100}
+	AlienMonster = OriginalMonster{"Alien", 40, Uncommon, 0, AlienType, genNewID(true, "Alien", ""), 100, 100, 100}
+	UnicornMonster = OriginalMonster{"Unicorn", 60, Rare, 0, UnicornType, genNewID(true, "Unicorn", ""), 100, 100, 100}
+	PhoenixMonster = OriginalMonster{"Phoenix", 70, Epic, 0, PhoenixType, genNewID(true, "Phoenix", ""), 100, 100, 100}
+	WolfMonster = OriginalMonster{"Wolf", 50, Rare, 0, WolfType, genNewID(true, "Wolf", ""), 100, 100, 100}
+	BearMonster = OriginalMonster{"Bear", 40, Uncommon, 0, BearType, genNewID(true, "Bear", ""), 100, 100, 100}
+	GorgonMonster = OriginalMonster{"Gorgon", 90, Epic, 0, GorgonType, genNewID(true, "Gorgon", ""), 100, 100, 100}
+	RabbitMonster = OriginalMonster{"Rabbit", 150, Legendary, 0, RabbitType, genNewID(true, "Rabbit", ""), 100, 100, 100}
 
 	WormMonster.writeToFile(WormMonster.getID())
 	DragonMonster.writeToFile(DragonMonster.getID())
@@ -153,8 +181,8 @@ type MonsterType struct {
 	Percentage float64
 }
 
-func (m MonsterType) printPercentage() {
-	fmt.Printf("%s, making up %d%s of the monster\n", m.Name, m.Percentage, "%")
+func (m MonsterType) percentageMakeup() string {
+	return fmt.Sprintf("%s, making up %f%s of the monster\n", m.Name, m.Percentage, "%")
 }
 
 type BredMonster struct {
@@ -165,6 +193,9 @@ type BredMonster struct {
 	Parents    []string
 	Generation int64
 	ID         string
+	Strength   int64
+	Speed      int64
+	Stamina    int64
 }
 
 func (b BredMonster) getName() string {
@@ -180,6 +211,40 @@ func (b BredMonster) getHealth() int64 {
 
 func (b BredMonster) getID() string {
 	return b.ID
+}
+
+func (b BredMonster) getSpeed() int64 {
+	return b.Health
+}
+
+func (b BredMonster) getStamina() int64 {
+	return b.Health
+}
+
+func (b BredMonster) getStrength() int64 {
+	return b.Health
+}
+
+func (b BredMonster) geneticallyRandomize() BredMonster {
+
+	// 10% chance for one of the stats to be boosted by 1-50 points, 7.5% chance for random type to be added
+
+	n := rng.Intn(100)
+
+	if n <= 10 {
+		increase := rng.Intn(49) + 1
+		statChoice := rng.Intn(4)
+		if statChoice == 0 {
+			b.Health += int64(increase)
+		} else if statChoice == 1 {
+			b.Strength += int64(increase)
+		} else if statChoice == 2 {
+			b.Speed += int64(increase)
+		} else if statChoice == 3 {
+			b.Stamina += int64(increase)
+		}
+	}
+	return b
 }
 
 func getParentObjectFromID(id string) Monster {
@@ -256,6 +321,33 @@ func determineHealth(parents []Monster) int64 {
 	sum := 0
 	for _, p := range parents {
 		sum += int(p.getHealth())
+	}
+
+	return int64(sum / len(parents))
+}
+
+func determineSpeed(parents []Monster) int64 {
+	sum := 0
+	for _, p := range parents {
+		sum += int(p.getSpeed())
+	}
+
+	return int64(sum / len(parents))
+}
+
+func determineStrength(parents []Monster) int64 {
+	sum := 0
+	for _, p := range parents {
+		sum += int(p.getStrength())
+	}
+
+	return int64(sum / len(parents))
+}
+
+func determineStamina(parents []Monster) int64 {
+	sum := 0
+	for _, p := range parents {
+		sum += int(p.getStamina())
 	}
 
 	return int64(sum / len(parents))
