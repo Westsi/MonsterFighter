@@ -111,15 +111,15 @@ func (o OriginalMonster) getHealth() int64 {
 }
 
 func (o OriginalMonster) getSpeed() int64 {
-	return o.Health
+	return o.Speed
 }
 
 func (o OriginalMonster) getStamina() int64 {
-	return o.Health
+	return o.Stamina
 }
 
 func (o OriginalMonster) getStrength() int64 {
-	return o.Health
+	return o.Strength
 }
 
 func (o OriginalMonster) getID() string {
@@ -128,16 +128,16 @@ func (o OriginalMonster) getID() string {
 
 func initOriginalMonsters() {
 	// need to update strength, speed, stamina for these (last 3 vals)
-	WormMonster = OriginalMonster{"Worm", 20, Common, 0, WormType, genNewID(true, "Worm", ""), 100, 100, 100}
-	DragonMonster = OriginalMonster{"Dragon", 100, Epic, 0, DragonType, genNewID(true, "Dragon", ""), 100, 100, 100}
-	TrollMonster = OriginalMonster{"Troll", 30, Common, 0, TrollType, genNewID(true, "Troll", ""), 100, 100, 100}
-	AlienMonster = OriginalMonster{"Alien", 40, Uncommon, 0, AlienType, genNewID(true, "Alien", ""), 100, 100, 100}
-	UnicornMonster = OriginalMonster{"Unicorn", 60, Rare, 0, UnicornType, genNewID(true, "Unicorn", ""), 100, 100, 100}
-	PhoenixMonster = OriginalMonster{"Phoenix", 70, Rare, 0, PhoenixType, genNewID(true, "Phoenix", ""), 100, 100, 100}
-	WolfMonster = OriginalMonster{"Wolf", 50, Uncommon, 0, WolfType, genNewID(true, "Wolf", ""), 100, 100, 100}
-	BearMonster = OriginalMonster{"Bear", 40, Uncommon, 0, BearType, genNewID(true, "Bear", ""), 100, 100, 100}
-	GorgonMonster = OriginalMonster{"Gorgon", 90, Epic, 0, GorgonType, genNewID(true, "Gorgon", ""), 100, 100, 100}
-	RabbitMonster = OriginalMonster{"Rabbit", 150, Legendary, 0, RabbitType, genNewID(true, "Rabbit", ""), 100, 100, 100}
+	WormMonster = OriginalMonster{"Worm", 200, Common, 0, WormType, genNewID(true, "Worm", ""), 100, 100, 100}
+	DragonMonster = OriginalMonster{"Dragon", 1000, Epic, 0, DragonType, genNewID(true, "Dragon", ""), 100, 100, 100}
+	TrollMonster = OriginalMonster{"Troll", 300, Common, 0, TrollType, genNewID(true, "Troll", ""), 100, 100, 100}
+	AlienMonster = OriginalMonster{"Alien", 400, Uncommon, 0, AlienType, genNewID(true, "Alien", ""), 100, 100, 100}
+	UnicornMonster = OriginalMonster{"Unicorn", 600, Rare, 0, UnicornType, genNewID(true, "Unicorn", ""), 100, 100, 100}
+	PhoenixMonster = OriginalMonster{"Phoenix", 700, Rare, 0, PhoenixType, genNewID(true, "Phoenix", ""), 100, 100, 100}
+	WolfMonster = OriginalMonster{"Wolf", 500, Uncommon, 0, WolfType, genNewID(true, "Wolf", ""), 100, 100, 100}
+	BearMonster = OriginalMonster{"Bear", 400, Uncommon, 0, BearType, genNewID(true, "Bear", ""), 100, 100, 100}
+	GorgonMonster = OriginalMonster{"Gorgon", 900, Epic, 0, GorgonType, genNewID(true, "Gorgon", ""), 100, 100, 100}
+	RabbitMonster = OriginalMonster{"Rabbit", 1500, Legendary, 0, RabbitType, genNewID(true, "Rabbit", ""), 100, 100, 100}
 	//
 	WormMonster.writeToFile(WormMonster.getID())
 	DragonMonster.writeToFile(DragonMonster.getID())
@@ -216,15 +216,15 @@ func (b BredMonster) getID() string {
 }
 
 func (b BredMonster) getSpeed() int64 {
-	return b.Health
+	return b.Speed
 }
 
 func (b BredMonster) getStamina() int64 {
-	return b.Health
+	return b.Stamina
 }
 
 func (b BredMonster) getStrength() int64 {
-	return b.Health
+	return b.Strength
 }
 
 func (b BredMonster) geneticallyRandomize() BredMonster {
@@ -234,6 +234,7 @@ func (b BredMonster) geneticallyRandomize() BredMonster {
 	n := rng.Intn(100)
 
 	if n <= 10 {
+		fmt.Println("INCREASING STAT")
 		increase := rng.Intn(49) + 1
 		statChoice := rng.Intn(4)
 		if statChoice == 0 {
@@ -249,6 +250,7 @@ func (b BredMonster) geneticallyRandomize() BredMonster {
 
 	n = rng.Intn(1000)
 	if n <= 80 {
+		fmt.Println("ADDING RANDOM TYPE")
 		if n <= 40 {
 			// COMMON
 			if n <= 20 {
@@ -335,9 +337,9 @@ func getTypes(parents []Monster) []MonsterType {
 }
 
 func workOutTypesPercentages(types []MonsterType) []MonsterType {
-	typecounts := make(map[MonsterType]int)
+	typecounts := make(map[string]int)
 	for _, t := range types {
-		typecounts[t] += 1
+		typecounts[t.Name] += 1
 	}
 	var ttr []MonsterType
 	sum := 0
@@ -350,9 +352,10 @@ func workOutTypesPercentages(types []MonsterType) []MonsterType {
 	for t, val := range typecounts {
 		// work out percentages
 		tt := MonsterType{
-			Name:       t.Name,
+			Name:       t,
 			Percentage: math.Round((float64(val)/float64(sum))*10000) / 100,
 		}
+		fmt.Println(tt)
 		ttr = append(ttr, tt)
 	}
 
@@ -373,6 +376,7 @@ func determineSpeed(parents []Monster) int64 {
 	for _, p := range parents {
 		sum += int(p.getSpeed())
 	}
+	fmt.Printf("SUM: %d\n", sum)
 
 	return int64(sum / len(parents))
 }
@@ -382,6 +386,7 @@ func determineStrength(parents []Monster) int64 {
 	for _, p := range parents {
 		sum += int(p.getStrength())
 	}
+	fmt.Printf("SUM: %d\n", sum)
 
 	return int64(sum / len(parents))
 }
@@ -391,6 +396,7 @@ func determineStamina(parents []Monster) int64 {
 	for _, p := range parents {
 		sum += int(p.getStamina())
 	}
+	fmt.Printf("SUM: %d\n", sum)
 
 	return int64(sum / len(parents))
 }

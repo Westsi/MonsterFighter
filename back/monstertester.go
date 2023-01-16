@@ -27,23 +27,13 @@ func monsterTester() {
 	fmt.Print("Types of final monster:")
 	fmt.Println(bm.Types)
 
-	bmtt := createMonster([]string{bm.getID(), bmt.getID()})
-	fmt.Println(bmtt.Name)
-	fmt.Println(bm.Rarity)
-	fmt.Println(bm.Health)
-	fmt.Println(bmtt.Generation)
-	fmt.Print("Types of final monster:")
-	fmt.Println(bmtt.Types)
-	fmt.Println(bm.Parents)
-
-	// omt := readBredMonsterFromFile(bmt.ID + ".json")
-
-	// fmt.Println(omt.Name)
-	// fmt.Println(omt.Rarity)
-	// fmt.Println(omt.Health)
-	// fmt.Println(omt.Generation)
+	// bmtt := createMonster([]string{bm.getID(), bmt.getID()})
+	// fmt.Println(bmtt.Name)
+	// fmt.Println(bm.Rarity)
+	// fmt.Println(bm.Health)
+	// fmt.Println(bmtt.Generation)
 	// fmt.Print("Types of final monster:")
-	// fmt.Println(omt.Types)
-	// fmt.Println(omt.Parents)
+	// fmt.Println(bmtt.Types)
+	// fmt.Println(bm.Parents)
 
 }

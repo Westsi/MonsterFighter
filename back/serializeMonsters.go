@@ -19,6 +19,9 @@ type FileOriginalMonster struct {
 	Generation int64
 	Type       string
 	ID         string
+	Strength   int64
+	Speed      int64
+	Stamina    int64
 }
 
 type FileBredMonster struct {
@@ -29,6 +32,9 @@ type FileBredMonster struct {
 	Parents    []string
 	Generation int64
 	ID         string
+	Strength   int64
+	Speed      int64
+	Stamina    int64
 }
 
 const BASEPATH string = "monsters/"
@@ -52,6 +58,9 @@ func (b BredMonster) writeToFile(path string) {
 		Parents:    b.Parents,
 		Generation: b.Generation,
 		ID:         b.ID,
+		Strength:   b.Strength,
+		Speed:      b.Speed,
+		Stamina:    b.Stamina,
 	}
 	monster, _ := json.Marshal(t)
 	// fmt.Println(string(monster))
@@ -75,6 +84,9 @@ func (o OriginalMonster) writeToFile(path string) {
 		Generation: o.Generation,
 		Type:       o.Type.getString(),
 		ID:         o.ID,
+		Strength:   o.Strength,
+		Speed:      o.Speed,
+		Stamina:    o.Stamina,
 	}
 
 	monster, _ := json.Marshal(t)
@@ -114,6 +126,9 @@ func readBredMonsterFromFile(path string) BredMonster {
 		Parents:    f.Parents,
 		Generation: f.Generation,
 		ID:         f.ID,
+		Strength:   f.Strength,
+		Speed:      f.Speed,
+		Stamina:    f.Stamina,
 	}
 
 	return b
@@ -140,6 +155,9 @@ func readOriginalMonsterFromFile(path string) OriginalMonster {
 		Rarity:     Rarity(f.Rarity),
 		Generation: f.Generation,
 		ID:         f.ID,
+		Strength:   f.Strength,
+		Speed:      f.Speed,
+		Stamina:    f.Stamina,
 	}
 
 	return o
