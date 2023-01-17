@@ -14,7 +14,7 @@ func initDB() {
 	}
 	db = _db
 
-	if err := db.AutoMigrate(); err != nil {
+	if err := db.AutoMigrate(&User{}); err != nil {
 		panic(err)
 	}
 }
