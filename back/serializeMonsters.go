@@ -166,7 +166,7 @@ func readOriginalMonsterFromFile(path string) OriginalMonster {
 func (mt MonsterType) getString() string {
 	//name percentage
 	s := ""
-	s = s + mt.Name + "~" + fmt.Sprintf("%f", mt.Percentage)
+	s = s + mt.Name + "~" + fmt.Sprintf("%f", mt.Percentage) + "~" + mt.getDominantSyllable()
 	return s
 }
 
@@ -178,5 +178,5 @@ func deserializeMonsterType(s string) MonsterType {
 		fmt.Println(err)
 	}
 
-	return MonsterType{Name: name, Percentage: percentage}
+	return MonsterType{Name: name, Percentage: percentage, DominantSyllable: tempstrings[2]}
 }

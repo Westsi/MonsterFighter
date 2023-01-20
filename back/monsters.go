@@ -157,7 +157,7 @@ func initMonsterTypes() {
 	DragonType = MonsterType{"Dragon", 100, "drag"}
 	TrollType = MonsterType{"Troll", 100, "tro"}
 	AlienType = MonsterType{"Alien", 100, "lien"}
-	UnicornType = MonsterType{"Unicorn", 100, "cornj"}
+	UnicornType = MonsterType{"Unicorn", 100, "corn"}
 	PhoenixType = MonsterType{"Phoenix", 100, "nix"}
 	WolfType = MonsterType{"Wolf", 100, "wol"}
 	BearType = MonsterType{"Bear", 100, "bea"}
@@ -186,6 +186,10 @@ type MonsterType struct {
 
 func (m MonsterType) percentageMakeup() string {
 	return fmt.Sprintf("%s, making up %f%s of the monster\n", m.Name, m.Percentage, "%")
+}
+
+func (m MonsterType) getDominantSyllable() string {
+	return m.DominantSyllable
 }
 
 type BredMonster struct {
@@ -322,9 +326,7 @@ func nameMonster(types []MonsterType) string {
 	name := ""
 
 	for _, t := range types {
-		name = name + t.DominantSyllable
-		fmt.Println(name)
-		fmt.Println(t.DominantSyllable)
+		name = name + t.getDominantSyllable()
 	}
 
 	// name = name + parents[0].getName()[0:int(len(parents[0].getName())/2)]
@@ -350,8 +352,10 @@ func getTypes(parents []Monster) []MonsterType {
 
 func workOutTypesPercentages(types []MonsterType) []MonsterType {
 	typecounts := make(map[string]int)
+	domsyls := make(map[string]string)
 	for _, t := range types {
 		typecounts[t.Name] += 1
+		domsyls[t.Name] = t.getDominantSyllable()
 	}
 	var ttr []MonsterType
 	sum := 0
@@ -364,10 +368,10 @@ func workOutTypesPercentages(types []MonsterType) []MonsterType {
 	for t, val := range typecounts {
 		// work out percentages
 		tt := MonsterType{
-			Name:       t,
-			Percentage: math.Round((float64(val)/float64(sum))*10000) / 100,
+			Name:             t,
+			Percentage:       math.Round((float64(val)/float64(sum))*10000) / 100,
+			DominantSyllable: domsyls[t],
 		}
-		fmt.Println(tt)
 		ttr = append(ttr, tt)
 	}
 
