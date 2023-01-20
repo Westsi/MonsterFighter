@@ -153,16 +153,16 @@ func initOriginalMonsters() {
 }
 
 func initMonsterTypes() {
-	WormType = MonsterType{"Worm", 100}
-	DragonType = MonsterType{"Dragon", 100}
-	TrollType = MonsterType{"Troll", 100}
-	AlienType = MonsterType{"Alien", 100}
-	UnicornType = MonsterType{"Unicorn", 100}
-	PhoenixType = MonsterType{"Phoenix", 100}
-	WolfType = MonsterType{"Wolf", 100}
-	BearType = MonsterType{"Bear", 100}
-	GorgonType = MonsterType{"Gorgon", 100}
-	RabbitType = MonsterType{"Rabbit", 100}
+	WormType = MonsterType{"Worm", 100, "wrm"}
+	DragonType = MonsterType{"Dragon", 100, "drag"}
+	TrollType = MonsterType{"Troll", 100, "tro"}
+	AlienType = MonsterType{"Alien", 100, "lien"}
+	UnicornType = MonsterType{"Unicorn", 100, "cornj"}
+	PhoenixType = MonsterType{"Phoenix", 100, "nix"}
+	WolfType = MonsterType{"Wolf", 100, "wol"}
+	BearType = MonsterType{"Bear", 100, "bea"}
+	GorgonType = MonsterType{"Gorgon", 100, "gon"}
+	RabbitType = MonsterType{"Rabbit", 100, "bit"}
 
 	fmt.Println("initialized monster types")
 }
@@ -179,8 +179,9 @@ func genNewID(isOriginalMonster bool, name string, parentOneID string) string {
 }
 
 type MonsterType struct {
-	Name       string
-	Percentage float64
+	Name             string
+	Percentage       float64
+	DominantSyllable string
 }
 
 func (m MonsterType) percentageMakeup() string {
@@ -319,6 +320,13 @@ func determineRarity(parents []Monster) Rarity {
 func nameMonster(types []MonsterType) string {
 	// name by comparing dominant syllables of types?
 	name := ""
+
+	for _, t := range types {
+		name = name + t.DominantSyllable
+		fmt.Println(name)
+		fmt.Println(t.DominantSyllable)
+	}
+
 	// name = name + parents[0].getName()[0:int(len(parents[0].getName())/2)]
 	// name = name + parents[1].getName()[int(len(parents[1].getName())/2):len(parents[1].getName())]
 	return name
@@ -380,7 +388,6 @@ func determineSpeed(parents []Monster) int64 {
 	for _, p := range parents {
 		sum += int(p.getSpeed())
 	}
-	fmt.Printf("SUM: %d\n", sum)
 
 	return int64(sum / len(parents))
 }
@@ -390,7 +397,6 @@ func determineStrength(parents []Monster) int64 {
 	for _, p := range parents {
 		sum += int(p.getStrength())
 	}
-	fmt.Printf("SUM: %d\n", sum)
 
 	return int64(sum / len(parents))
 }
@@ -400,7 +406,6 @@ func determineStamina(parents []Monster) int64 {
 	for _, p := range parents {
 		sum += int(p.getStamina())
 	}
-	fmt.Printf("SUM: %d\n", sum)
 
 	return int64(sum / len(parents))
 }
