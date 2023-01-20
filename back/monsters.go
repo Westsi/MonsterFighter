@@ -44,13 +44,13 @@ func createMonster(parentss []string) BredMonster {
 		parents = append(parents, getParentObjectFromID(id))
 	}
 	b := BredMonster{
-		Name:       nameMonster(parents),
+		Name:       "",
 		Health:     determineHealth(parents),
 		Rarity:     determineRarity(parents),
 		Generation: getGeneration(parents),
 		Parents:    parentss,
 		Types:      getTypes(parents),
-		ID:         genNewID(false, nameMonster(parents), parentss[0]),
+		ID:         parentss[0],
 		Strength:   determineStrength(parents),
 		Speed:      determineSpeed(parents),
 		Stamina:    determineStamina(parents),
@@ -286,6 +286,9 @@ func (b BredMonster) geneticallyRandomize() BredMonster {
 			b.Types = workOutTypesPercentages(append(b.Types, RabbitType))
 		}
 	}
+
+	b.Name = nameMonster(b.Types)
+	b.ID = genNewID(false, b.Name, b.ID)
 	return b
 }
 
@@ -313,10 +316,11 @@ func determineRarity(parents []Monster) Rarity {
 	return Rare
 }
 
-func nameMonster(parents []Monster) string {
+func nameMonster(types []MonsterType) string {
+	// name by comparing dominant syllables of types?
 	name := ""
-	name = name + parents[0].getName()[0:int(len(parents[0].getName())/2)]
-	name = name + parents[1].getName()[int(len(parents[1].getName())/2):len(parents[1].getName())]
+	// name = name + parents[0].getName()[0:int(len(parents[0].getName())/2)]
+	// name = name + parents[1].getName()[int(len(parents[1].getName())/2):len(parents[1].getName())]
 	return name
 }
 
