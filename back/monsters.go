@@ -70,6 +70,7 @@ type Monster interface {
 	getStrength() int64
 	getStamina() int64
 	getID() string
+	getRarity() Rarity
 }
 
 type Rarity string
@@ -96,6 +97,9 @@ type OriginalMonster struct {
 
 func (o OriginalMonster) getName() string {
 	return o.Name
+}
+func (o OriginalMonster) getRarity() Rarity {
+	return o.Rarity
 }
 
 func (o OriginalMonster) getGeneration() int64 {
@@ -208,6 +212,10 @@ type BredMonster struct {
 func (b BredMonster) getName() string {
 	return b.Name
 }
+
+func (b BredMonster) getRarity() Rarity {
+	return b.Rarity
+}
 func (b BredMonster) getGeneration() int64 {
 	return b.Generation
 }
@@ -318,7 +326,26 @@ func determineRarity(parents []Monster) Rarity {
 	// something to do with generation, rarities of parents, and damage
 
 	// later generation - more powerful. should not directly affect, but will affect damage and health
-	return Rare
+	sum := getGeneration(parents)
+	sum += determineStrength(parents)
+	sum += determineHealth(parents)
+	sum += determineSpeed(parents)
+	sum += determineStamina(parents)
+	fmt.Printf("SUM: %d\n", sum)
+	var rar Rarity
+	if sum < 400 {
+		rar = Common
+	} else if sum < 600 {
+		rar = Uncommon
+	} else if sum < 800 {
+		rar = Rare
+	} else if sum < 1000 {
+		rar = Epic
+	} else {
+		rar = Legendary
+	}
+
+	return rar
 }
 
 func nameMonster(types []MonsterType) string {
