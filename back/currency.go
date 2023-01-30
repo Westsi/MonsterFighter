@@ -9,10 +9,14 @@ package main
 // amount of GZ in circulation
 var gz_amount int64
 
+// The amount of base currency that a new account gets
+var new_user_currency int64
 
 func initCurrency() {
 	// set starting amount of GZ to 100 billion, or 1 million dollars
 	gz_amount = 100000000000
+	// equivalent of $10
+	new_user_currency = 1000000
 }
 
 func getMonsterWorth(m Monster){
