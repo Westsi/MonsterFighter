@@ -3,7 +3,8 @@ package main
 import "fmt"
 
 func monsterTester() {
-	bmo := createMonster([]string{WormMonster.getID(), TrollMonster.getID()})
+	testUser := User{Name: "Test", Password: "test", Email: "test", GakZunnCount: int(new_user_currency)}
+	bmo := createMonster(&testUser, []string{WormMonster.getID(), TrollMonster.getID()})
 	fmt.Println(bmo.Name)
 	fmt.Println(bmo.Rarity)
 	fmt.Println(bmo.Health)
@@ -11,7 +12,7 @@ func monsterTester() {
 	fmt.Println(bmo.Types)
 	fmt.Println(bmo.Parents)
 
-	bmt := createMonster([]string{DragonMonster.getID(), TrollMonster.getID()})
+	bmt := createMonster(&testUser, []string{DragonMonster.getID(), TrollMonster.getID()})
 	fmt.Println(bmt.Name)
 	fmt.Println(bmt.Rarity)
 	fmt.Println(bmt.Health)
@@ -19,7 +20,7 @@ func monsterTester() {
 	fmt.Println(bmt.Types)
 	fmt.Println(bmt.Parents)
 
-	bm := createMonster([]string{bmo.getID(), bmt.getID()})
+	bm := createMonster(&testUser, []string{bmo.getID(), bmt.getID()})
 	fmt.Println(bm.Name)
 	fmt.Println(bm.Rarity)
 	fmt.Println(bm.Health)
@@ -27,7 +28,7 @@ func monsterTester() {
 	fmt.Print("Types of final monster:")
 	fmt.Println(bm.Types)
 
-	// bmtt := createMonster([]string{bm.getID(), bmt.getID()})
+	// bmtt := createMonster(&testUser, []string{bm.getID(), bmt.getID()})
 	// fmt.Println(bmtt.Name)
 	// fmt.Println(bm.Rarity)
 	// fmt.Println(bm.Health)

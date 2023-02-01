@@ -38,7 +38,7 @@ var GorgonMonster OriginalMonster
 var RabbitType MonsterType
 var RabbitMonster OriginalMonster
 
-func createMonster(parentss []string) BredMonster {
+func createMonster(user *User, parentss []string) BredMonster {
 	var parents []Monster
 	for _, id := range parentss {
 		parents = append(parents, getParentObjectFromID(id))
@@ -54,6 +54,7 @@ func createMonster(parentss []string) BredMonster {
 		Strength:   determineStrength(parents),
 		Speed:      determineSpeed(parents),
 		Stamina:    determineStamina(parents),
+		Owner:      user.Name,
 	}
 	b = b.geneticallyRandomize()
 	b.writeToFile(b.ID)
@@ -207,6 +208,7 @@ type BredMonster struct {
 	Strength   int64
 	Speed      int64
 	Stamina    int64
+	Owner      string
 }
 
 func (b BredMonster) getName() string {

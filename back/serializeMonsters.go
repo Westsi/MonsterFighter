@@ -35,6 +35,7 @@ type FileBredMonster struct {
 	Strength   int64
 	Speed      int64
 	Stamina    int64
+	Owner      string
 }
 
 const BASEPATH string = "monsters/"
@@ -61,6 +62,7 @@ func (b BredMonster) writeToFile(path string) {
 		Strength:   b.Strength,
 		Speed:      b.Speed,
 		Stamina:    b.Stamina,
+		Owner:      b.Owner,
 	}
 	monster, _ := json.Marshal(t)
 	// fmt.Println(string(monster))
@@ -129,6 +131,7 @@ func readBredMonsterFromFile(path string) BredMonster {
 		Strength:   f.Strength,
 		Speed:      f.Speed,
 		Stamina:    f.Stamina,
+		Owner:      f.Owner,
 	}
 
 	return b
