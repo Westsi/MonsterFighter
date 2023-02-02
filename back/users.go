@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"gorm.io/gorm"
@@ -17,6 +16,7 @@ type User struct {
 }
 
 func newUser(w http.ResponseWriter, r *http.Request) {
+	// POST
 	var parsedUser struct {
 		Name     string
 		Password string
@@ -43,10 +43,41 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
+	// GET
 	users := db.Find(&User{})
 	d, err := json.Marshal(users)
 	if err != nil {
-		fmt.Println(err)
+		w.WriteHeader(500)
+		w.Header().Add("error", "error in marshalling json data. please report this as a bug.")
+		return
+	}
+	w.Write(d)
+}
+
+func getUser(w http.ResponseWriter, r *http.Request) {
+	// GET
+	// will have been passed through from request in headers["username"]
+	username := r.Header.Get("username")
+	if username == "" {
+		w.WriteHeader(400)
+		w.Header().Add("error", "username is empty")
+		return
+	}
+
+	var foundUser User
+	db.Where(&User{Name: username}).First(&foundUser)
+	if foundUser.Name == "" {
+		w.WriteHeader(204)
+		w.Header().Add("error", "user does not exist")
+		return
+	}
+
+	d, err := json.Marshal(foundUser)
+
+	if err != nil {
+		w.WriteHeader(500)
+		w.Header().Add("error", "error in marshalling json data. please report this as a bug.")
+		return
 	}
 	w.Write(d)
 }
