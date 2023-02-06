@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"gorm.io/gorm"
@@ -16,6 +17,7 @@ type User struct {
 }
 
 func newUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GOT NEW USER REQ")
 	// POST
 	var parsedUser struct {
 		Name     string
@@ -25,6 +27,7 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&parsedUser)
 	if err != nil {
+		fmt.Println("PANIC")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -44,9 +47,11 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	// GET
-	users := db.Find(&User{})
+	var users []User
+	db.Find(&users)
 	d, err := json.Marshal(users)
 	if err != nil {
+		fmt.Println("responding with 500")
 		w.WriteHeader(500)
 		w.Header().Add("error", "error in marshalling json data. please report this as a bug.")
 		return

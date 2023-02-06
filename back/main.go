@@ -15,7 +15,7 @@ func main() {
 	http.HandleFunc("/getusers", getUsers)
 	http.HandleFunc("/getuser", getUser)
 	http.HandleFunc("/new/user", newUser)
-	http.ListenAndServe("8000", nil)
+	http.ListenAndServe("localhost:8000", nil)
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
